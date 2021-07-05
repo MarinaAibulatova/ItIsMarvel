@@ -9,21 +9,23 @@
 /* Begin PBXBuildFile section */
 		9C66F4CD26931F0A002E5C0A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4CC26931F0A002E5C0A /* AppDelegate.swift */; };
 		9C66F4CF26931F0A002E5C0A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4CE26931F0A002E5C0A /* SceneDelegate.swift */; };
-		9C66F4D126931F0A002E5C0A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4D026931F0A002E5C0A /* ViewController.swift */; };
+		9C66F4D126931F0A002E5C0A /* MarvelTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4D026931F0A002E5C0A /* MarvelTableViewController.swift */; };
 		9C66F4D426931F0A002E5C0A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C66F4D226931F0A002E5C0A /* Main.storyboard */; };
 		9C66F4D626931F0C002E5C0A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C66F4D526931F0C002E5C0A /* Assets.xcassets */; };
 		9C66F4D926931F0C002E5C0A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C66F4D726931F0C002E5C0A /* LaunchScreen.storyboard */; };
+		9C66F4E3269322CB002E5C0A /* MarvelTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4E2269322CB002E5C0A /* MarvelTableCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9C66F4C926931F0A002E5C0A /* ItIsMarvel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ItIsMarvel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C66F4CC26931F0A002E5C0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9C66F4CE26931F0A002E5C0A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		9C66F4D026931F0A002E5C0A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9C66F4D026931F0A002E5C0A /* MarvelTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelTableViewController.swift; sourceTree = "<group>"; };
 		9C66F4D326931F0A002E5C0A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9C66F4D526931F0C002E5C0A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C66F4D826931F0C002E5C0A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9C66F4DA26931F0C002E5C0A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9C66F4E2269322CB002E5C0A /* MarvelTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelTableCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +58,32 @@
 		9C66F4CB26931F0A002E5C0A /* ItIsMarvel */ = {
 			isa = PBXGroup;
 			children = (
+				9C66F4E0269321E4002E5C0A /* View */,
+				9C66F4E1269321F3002E5C0A /* Controllers */,
 				9C66F4CC26931F0A002E5C0A /* AppDelegate.swift */,
 				9C66F4CE26931F0A002E5C0A /* SceneDelegate.swift */,
-				9C66F4D026931F0A002E5C0A /* ViewController.swift */,
 				9C66F4D226931F0A002E5C0A /* Main.storyboard */,
 				9C66F4D526931F0C002E5C0A /* Assets.xcassets */,
 				9C66F4D726931F0C002E5C0A /* LaunchScreen.storyboard */,
 				9C66F4DA26931F0C002E5C0A /* Info.plist */,
 			);
 			path = ItIsMarvel;
+			sourceTree = "<group>";
+		};
+		9C66F4E0269321E4002E5C0A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				9C66F4E2269322CB002E5C0A /* MarvelTableCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		9C66F4E1269321F3002E5C0A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9C66F4D026931F0A002E5C0A /* MarvelTableViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,9 +156,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C66F4D126931F0A002E5C0A /* ViewController.swift in Sources */,
+				9C66F4D126931F0A002E5C0A /* MarvelTableViewController.swift in Sources */,
 				9C66F4CD26931F0A002E5C0A /* AppDelegate.swift in Sources */,
 				9C66F4CF26931F0A002E5C0A /* SceneDelegate.swift in Sources */,
+				9C66F4E3269322CB002E5C0A /* MarvelTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
