@@ -41,5 +41,7 @@ struct ImageMarvel: Codable {
 }
 
 
-
+struct Offset {
+    static var skipNumber: Int = 0
+}
 

@@ -9,7 +9,7 @@ import Foundation
 
 protocol MarvelRequestManagerDelegate: AnyObject {
     func didFinishedWithError(error: String)
-    func didFinishedFetchCharacters(result: [CharacterResult]?)
+    func didFinishedFetchCharacters(result: [CharacterResult])
 }
 
 class MarvelRequestManager{
@@ -24,8 +24,16 @@ class MarvelRequestManager{
     weak var delegate: MarvelRequestManagerDelegate?
     
     //MARK: - Fetch characters
-    func fetchCharacters() {
-        let parameters = ["limit": "20"]
+    func fetchCharacters(with sortParameters: [String: String] = [:]) {
+        var parameters = ["limit": "20", "offset": String(Offset.skipNumber)]
+        
+        if !sortParameters.isEmpty {
+            for p in sortParameters {
+                parameters[p.key] = p.value
+            }
+            Offset.skipNumber = 0
+        }
+        
         let urlManager = URLManager()
         let url = urlManager.createUrl(with: parameters)
         let getCharactersRequest = createGetRequest(with: url)
@@ -45,7 +53,13 @@ class MarvelRequestManager{
                     if let safeData = data {
                         let parser = JSONParserManager(data: safeData)
                         let results = parser.parseJSONCharacters()
-                        self.delegate?.didFinishedFetchCharacters(result: results)
+                        
+                        if let notNilResults = results {
+                            Offset.skipNumber += notNilResults.count
+                            self.delegate?.didFinishedFetchCharacters(result: notNilResults)
+                        }else {
+                            self.delegate?.didFinishedWithError(error: "error")
+                        }
                     }
                 }
             }
@@ -68,8 +82,7 @@ class MarvelRequestManager{
         if let url = url {
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-           // request.setValue("application/json", forHTTPHeaderField: "Accept")
-            
+        
             request.httpMethod = "GET"
             
             return request
