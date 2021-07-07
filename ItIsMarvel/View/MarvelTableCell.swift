@@ -12,37 +12,6 @@ class MarvelTableCell: UITableViewCell {
     //MARK: - UI components
     static let registerCellName: String = "MarvelCell"
     
-    private let mainStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.distribution = .fill
-        stack.alignment = .fill
-        stack.spacing = 0
-        
-        return stack
-    }()
-    
-    private let nameStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.distribution = .fillProportionally
-        stack.alignment = .fill
-        stack.spacing = 10
-        
-        return stack
-    }()
-    
-    private let nameView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .none
-        view.contentMode = .scaleAspectFit
-        
-        return view
-    }()
-    
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -86,8 +55,17 @@ class MarvelTableCell: UITableViewCell {
         contentView.addSubview(nameLabel)
         contentView.addSubview(imageMarvelView)
         
-        //label
-        var constraints = [
+        setLabelConstraints()
+        setImageViewConstraints()
+        
+        imageMarvelView.addSubview(imageMarvel)
+        setImageConstraints()
+ 
+    }
+    
+    //MARK: - Constraints
+    func setLabelConstraints() {
+        let constraints = [
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor)]
@@ -95,68 +73,24 @@ class MarvelTableCell: UITableViewCell {
         nameLabel.addConstraint(NSLayoutConstraint(item: nameLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 30))
         
         NSLayoutConstraint.activate(constraints)
-        
-        //image
-        constraints = [
+    }
+    
+    func setImageViewConstraints() {
+        let constraints = [
             imageMarvelView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageMarvelView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageMarvelView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor),
             imageMarvelView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)]
         
         NSLayoutConstraint.activate(constraints )
-        
-        imageMarvelView.addSubview(imageMarvel)
-        
-        //image
-        constraints = [
+    }
+   
+    func setImageConstraints() {
+        let  constraints = [
             imageMarvel.trailingAnchor.constraint(equalTo: imageMarvelView.trailingAnchor),
             imageMarvel.leadingAnchor.constraint(equalTo: imageMarvelView.leadingAnchor),
             imageMarvel.topAnchor.constraint(equalTo: imageMarvelView.topAnchor),
             imageMarvel.bottomAnchor.constraint(equalTo: imageMarvelView.bottomAnchor)]
-        
-        NSLayoutConstraint.activate(constraints )
-        
-//        contentView.addSubview(mainStack)
-//        setMainStackConstraints()
-//
-//        mainStack.addArrangedSubview(nameView)
-//        mainStack.addArrangedSubview(imageMarvelView)
-//
-//        nameView.addSubview(nameLabel)
-//        setNameConstraints()
-//
-//        mainStack.addArrangedSubview(imageMarvelView)
-//        imageMarvelView.addSubview(imageMarvel)
-//        setImageConstraints()
-    }
-    
-    //MARK: - Constraints
-    func setMainStackConstraints() {
-        let constraints = [
-            mainStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            mainStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            mainStack.topAnchor.constraint(equalTo: contentView.topAnchor),
-            mainStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)]
-        
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    func setNameConstraints() {
-        let constraints = [
-            nameLabel.trailingAnchor.constraint(equalTo: nameView.trailingAnchor),
-            nameLabel.leadingAnchor.constraint(equalTo: nameView.leadingAnchor),
-            nameLabel.topAnchor.constraint(equalTo: nameView.topAnchor),
-            nameLabel.bottomAnchor.constraint(equalTo: nameView.bottomAnchor)]
-        
-        NSLayoutConstraint.activate(constraints )
-    }
-   
-    func setImageConstraints() {
-        let constraints = [
-            imageMarvel.trailingAnchor.constraint(equalTo: imageMarvelView.trailingAnchor, constant: -50),
-            imageMarvel.leadingAnchor.constraint(equalTo: imageMarvelView.leadingAnchor, constant: 50),
-            imageMarvel.topAnchor.constraint(equalTo: imageMarvelView.topAnchor, constant: 10),
-            imageMarvel.bottomAnchor.constraint(equalTo: imageMarvelView.bottomAnchor, constant: -50)]
         
         NSLayoutConstraint.activate(constraints )
     }
@@ -175,7 +109,6 @@ class MarvelTableCell: UITableViewCell {
                 }
             }
         }
-        //imageView?.image = UIImage(named: "cat")
     }
     
     

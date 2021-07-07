@@ -18,20 +18,15 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
         
         return table
     }()
-
-    func setMarvelTableViewConstraints() {
-        let constraints = [
-            marvelTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            marvelTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            marvelTableView.topAnchor.constraint(equalTo: view.topAnchor),
-            marvelTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)]
-        
-        NSLayoutConstraint.activate(constraints)
-    }
-
+    
+    var upSortButton: UIBarButtonItem!
+    var downSortButton: UIBarButtonItem!
+    var segmentControll: UISegmentedControl!
+    
     //MARK: - variables
     let marvelRequestManager = MarvelRequestManager()
     var marvelList: [CharacterResult] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,18 +35,19 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
         self.navigationItem.title = "Marvel"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
-        let imageUp = UIImage(systemName: "arrow.up.circle")
-        let imageDown = UIImage(systemName: "arrow.down.circle")
-        
-        //segment controll
+        //MARK: - segment controll
         let sortItems = ["name", "id"]
-        let segmentControll = UISegmentedControl(items: sortItems)
+        segmentControll = UISegmentedControl(items: sortItems)
         segmentControll.selectedSegmentIndex = 0
+        segmentControll.addTarget(self, action: #selector(sortValueChanched), for: .valueChanged)
         navigationItem.titleView = segmentControll
         
-        let upButton = UIBarButtonItem(image: imageUp, style: .plain, target: self, action: #selector(upTapped))
-        let downButton = UIBarButtonItem(image: imageDown, style: .plain, target: self, action: #selector(upTapped))
-        navigationItem.rightBarButtonItems = [upButton, downButton]
+        //MARK: - BarButton
+        upSortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.circle"), style: .plain, target: self, action: #selector(upTapped))
+        downSortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.down.circle"), style: .plain, target: self, action: #selector(downTapped))
+        
+        upSortButton.isEnabled = false
+        navigationItem.rightBarButtonItems = [downSortButton, upSortButton]
        
         self.view.addSubview(marvelTableView)
         setMarvelTableViewConstraints()
@@ -59,6 +55,7 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
         //MARK: - delegates
         marvelTableView.delegate = self
         marvelTableView.dataSource = self
+        marvelTableView.prefetchDataSource = self
         
         //MARK: - Marvel request
         marvelRequestManager.delegate = self
@@ -66,21 +63,59 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
         
     }
 
-
-    @objc func upTapped() {
+    //MARK: - Constraints
+    func setMarvelTableViewConstraints() {
+        let margins = view.layoutMarginsGuide
+        var constraints = [
+            marvelTableView.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
+            marvelTableView.trailingAnchor.constraint(equalTo: margins.trailingAnchor)]
+        NSLayoutConstraint.activate(constraints)
         
+        let guide = view.safeAreaLayoutGuide
+        constraints = [
+            marvelTableView.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0),
+            marvelTableView.bottomAnchor.constraint(equalToSystemSpacingBelow: guide.bottomAnchor, multiplier: 1.0)]
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    //MARK: - Buttons actions
+    @objc func upTapped() {
+        fetchCharactersWithParameters()
+        upSortButton.isEnabled = false
+        downSortButton.isEnabled = true
     }
     
+    @objc func downTapped() {
+        fetchCharactersWithParameters()
+        downSortButton.isEnabled = false
+        upSortButton.isEnabled = true
+    }
+    
+    @objc func sortValueChanched() {
+        fetchCharactersWithParameters()
+    }
+    
+    func fetchCharactersWithParameters() {
+        self.marvelList.removeAll()
+        var sortValue = ""
+       
+        if segmentControll.selectedSegmentIndex == 0 {
+            sortValue = downSortButton.isEnabled ? "-name" : "name"
+        }else {
+            sortValue = downSortButton.isEnabled ? "-id" : "id"
+        }
+        self.marvelRequestManager.fetchCharacters(with: ["orderBy": sortValue])
+    }
+    
+    //MARK: - MarvelRequestManagerDelegate
     func didFinishedWithError(error: String) {
         print(error)
     }
     
-    func didFinishedFetchCharacters(result: [CharacterResult]?) {
-        if let list = result {
-            self.marvelList = list
-            DispatchQueue.main.async {
-                self.marvelTableView.reloadData()
-            }
+    func didFinishedFetchCharacters(result: [CharacterResult]) {
+        self.marvelList += result
+        DispatchQueue.main.async {
+            self.marvelTableView.reloadData()
         }
     }
 }
@@ -99,9 +134,25 @@ extension MarvelTableViewController: UITableViewDelegate, UITableViewDataSource 
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let controller = MarvelItemViewController()
+        controller.marvelItem = marvelList[indexPath.row]
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    //MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200
     }
+    
 
 }
 
+extension MarvelTableViewController: UITableViewDataSourcePrefetching {
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        if indexPaths[indexPaths.count-1].row == marvelList.count - 1 {
+            self.marvelRequestManager.fetchCharacters()
+        }
+    }
+}
