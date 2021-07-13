@@ -14,7 +14,7 @@ struct URLManager {
     let privateKey = "cbd7f39722ed06a37fdf77844898db7e571ac69e"
     
     //MARK: - URL for characters/series
-    func createUrl(with queryItems: [String: String], for path: String = "characters") -> URL? {
+    func createUrl(with queryItems: [String: String], for path: String = "") -> URL? {
         
         let ts = createTs()
         let hash = createHash(with: ts)
@@ -22,7 +22,11 @@ struct URLManager {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "gateway.marvel.com"
-        urlComponents.path = "/v1/public/\(path)"
+        urlComponents.path = "/v1/public/characters"
+        
+        if !path.isEmpty {
+            urlComponents.path += path
+        }
         urlComponents.queryItems = setQuerryItems(with: queryItems)
         
         urlComponents.queryItems?.append(URLQueryItem(name: "ts", value: ts))

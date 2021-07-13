@@ -41,7 +41,9 @@ struct ImageMarvel: Codable {
 }
 
 
-struct Offset {
-    static var skipNumber: Int = 0
+struct RequestStaticParameters {
+    static let limit: Int = 20
+    static var offsetCharacters: Int = 0
+    static var offsetSeries: Int = 0
 }
 

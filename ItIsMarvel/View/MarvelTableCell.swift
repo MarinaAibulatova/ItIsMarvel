@@ -97,15 +97,20 @@ class MarvelTableCell: UITableViewCell {
     
     //MARK: - set variables
     func setVar(for item: CharacterResult) {
-        nameLabel.text = item.name
-    
-        //image
-        if let thumbnail = item.thumbnail {
-            let urlString = thumbnail.path! + "." + thumbnail.extensionString!
-            if let url = URL(string: urlString) {
-                let data = try? Data(contentsOf: url)
-                if let _ = data {
-                    imageMarvel.image = UIImage(data: data!)
+        DispatchQueue.global().async {
+            DispatchQueue.main.async {
+                self.nameLabel.text = item.name
+            }
+            //image
+            if let thumbnail = item.thumbnail {
+                let urlString = thumbnail.path! + "." + thumbnail.extensionString!
+                if let url = URL(string: urlString) {
+                    let data = try? Data(contentsOf: url)
+                    if let _ = data {
+                        DispatchQueue.main.async {
+                            self.imageMarvel.image = UIImage(data: data!)
+                        }
+                    }
                 }
             }
         }

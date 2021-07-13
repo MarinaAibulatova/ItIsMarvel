@@ -14,7 +14,7 @@ class MarvelItemView: UIView {
     let mainView: UIView = {
        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .red
+        view.backgroundColor = .none
         view.contentMode = .scaleToFill
         
         return view
@@ -88,8 +88,6 @@ class MarvelItemView: UIView {
 
         imageMarvelView.addSubview(imageMarvel)
         setImageMarvelConstraints()
-        
-        setVar()
     }
     
     //MARK: - Constraints
@@ -146,10 +144,19 @@ class MarvelItemView: UIView {
         NSLayoutConstraint.activate(constraints )
     }
     
-    func setVar() {
-        nameLabel.text = "Marvel"
-        imageMarvel.image = UIImage(named: "marvel")
-        descriptionItem.text = "rkjergjiregeljgvrsdjfgvkngvjkdnrfkgvnjdngvjdnjgrnwfkwkgfkwenfjnwefnjwenjfnwjwnfjwenfjnwejfnwjenfjwnejfnjewqnfjwenfjnwjnfjwejfnjwenfjwjnfjwenfjnwejfnwe"
+    func setVar(for item: CharacterResult) {
+        nameLabel.text = item.name
+       
+        if let thumbnail = item.thumbnail {
+            let urlString = thumbnail.path! + "." + thumbnail.extensionString!
+            if let url = URL(string: urlString) {
+                let data = try? Data(contentsOf: url)
+                if let _ = data {
+                    imageMarvel.image = UIImage(data: data!)
+                }
+            }
+        }
+        descriptionItem.text = item.description
     }
 
 }
