@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate {
+class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelegate {
 
     //MARK: - ui
     private var marvelTableView: UITableView = {
@@ -24,7 +24,7 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
     var segmentControll: UISegmentedControl!
     
     //MARK: - variables
-    let marvelRequestManager = MarvelRequestManager()
+    let marvelManager = MarvelCharactersManager()
     var marvelList: [CharacterResult] = []
     
     override func viewDidLoad() {
@@ -58,8 +58,8 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
         marvelTableView.prefetchDataSource = self
         
         //MARK: - Marvel request
-        marvelRequestManager.delegate = self
-        marvelRequestManager.fetchCharacters()
+        marvelManager.delegate = self
+        marvelManager.fetchCharacters(limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
         
     }
 
@@ -98,13 +98,14 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
     func fetchCharactersWithParameters() {
         self.marvelList.removeAll()
         var sortValue = ""
-       
+        RequestStaticParameters.offsetCharacters = 0
+        
         if segmentControll.selectedSegmentIndex == 0 {
             sortValue = downSortButton.isEnabled ? "-name" : "name"
         }else {
             sortValue = downSortButton.isEnabled ? "-id" : "id"
         }
-        self.marvelRequestManager.fetchCharacters(with: ["orderBy": sortValue])
+        self.marvelManager.fetchCharacters(with: ["orderBy": sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
     }
     
     //MARK: - MarvelRequestManagerDelegate
@@ -114,10 +115,13 @@ class MarvelTableViewController: UIViewController, MarvelRequestManagerDelegate 
     
     func didFinishedFetchCharacters(result: [CharacterResult]) {
         self.marvelList += result
+        RequestStaticParameters.offsetCharacters += result.count
+        
         DispatchQueue.main.async {
             self.marvelTableView.reloadData()
         }
     }
+    
 }
 
 extension MarvelTableViewController: UITableViewDelegate, UITableViewDataSource {
@@ -150,9 +154,10 @@ extension MarvelTableViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension MarvelTableViewController: UITableViewDataSourcePrefetching {
     
+    //MARK: - UITableViewDataSourcePrefetching
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         if indexPaths[indexPaths.count-1].row == marvelList.count - 1 {
-            self.marvelRequestManager.fetchCharacters()
+            self.marvelManager.fetchCharacters(limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
         }
     }
 }

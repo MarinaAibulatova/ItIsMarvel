@@ -7,23 +7,31 @@
 
 import UIKit
 
-class MarvelItemViewController: UIViewController {
+class MarvelItemViewController: UIViewController, MarvelCharacterManagerDelegate{
 
+    //MARK: - Variables
     var marvelItem: CharacterResult?
+    var marvelManager = MarvelCharacterManager()
     var seriesTable: UITableView!
     
-    let testArray: [String] = Array(repeating: "new", count: 30)
+    var series: [Series] = []
+    let marvelItemView = MarvelItemView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let marvelItemView = MarvelItemView()
+       // let marvelItemView = MarvelItemView()
         marvelItemView.seriesTableView.delegate = self
         marvelItemView.seriesTableView.dataSource = self
         
         self.view.addSubview(marvelItemView.mainView)
         setMarvelViewConstraints(for: marvelItemView.mainView)
         
+        marvelManager.delegate = self
+        if let _ = marvelItem {
+            marvelItemView.setVar(for: marvelItem!)
+            marvelManager.fetchSeries(with: marvelItem!.id, limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetSeries)
+        }
     }
     
     //MARK: - Constraints
@@ -43,6 +51,23 @@ class MarvelItemViewController: UIViewController {
         
         NSLayoutConstraint.activate(constraints)
     }
+    
+    //MARK: - Marvel request manager delegate
+    func didFinishedWithError(error: String) {
+        
+    }
+    
+    func didFinishedFetchSeries(result: [Series]) {
+        self.series += result
+        RequestStaticParameters.offsetSeries += result.count
+        DispatchQueue.main.async {
+            self.marvelItemView.seriesTableView.reloadData()
+        }
+    }
+    
+    func didFinishedFetchCharacter(result: CharacterResult) {
+        
+    }
 
 }
 
@@ -50,15 +75,24 @@ extension MarvelItemViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MarvelItemView.cellRegister, for: indexPath)
-        cell.textLabel?.text = testArray[indexPath.row]
+        cell.textLabel?.text = series[indexPath.row].title
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return series.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 150
+    }
+}
+
+extension MarvelItemViewController: UITableViewDataSourcePrefetching {
+    //MARK: - UITableViewDataSourcePrefetching
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        if indexPaths[indexPaths.count-1].row == series.count - 1 {
+            self.marvelManager.fetchSeries(with: marvelItem!.id, limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetSeries)
+        }
     }
 }
