@@ -14,7 +14,7 @@ class MarvelItemView: UIView {
     let mainView: UIView = {
        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .none
+        view.backgroundColor = .white
         view.contentMode = .scaleToFill
         
         return view
@@ -119,7 +119,7 @@ class MarvelItemView: UIView {
             descriptionItem.trailingAnchor.constraint(equalTo: mainView.trailingAnchor),
             descriptionItem.topAnchor.constraint(equalTo: imageMarvelView.bottomAnchor)]
         
-        descriptionItem.addConstraint(NSLayoutConstraint(item: descriptionItem, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1.0, constant: 50))
+        descriptionItem.addConstraint(NSLayoutConstraint(item: descriptionItem, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1.0, constant: 100))
         
         NSLayoutConstraint.activate(constraints)
     }
@@ -156,7 +156,7 @@ class MarvelItemView: UIView {
                 }
             }
         }
-        descriptionItem.text = item.description
+        descriptionItem.text = item.description!.isEmpty ? "no description" : item.description
     }
 
 }

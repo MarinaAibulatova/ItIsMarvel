@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C33B2F1269EB27A004F5BF4 /* LoadingScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C33B2F0269EB27A004F5BF4 /* LoadingScreenViewController.swift */; };
 		9C66F4CD26931F0A002E5C0A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4CC26931F0A002E5C0A /* AppDelegate.swift */; };
 		9C66F4CF26931F0A002E5C0A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4CE26931F0A002E5C0A /* SceneDelegate.swift */; };
 		9C66F4D126931F0A002E5C0A /* MarvelTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C66F4D026931F0A002E5C0A /* MarvelTableViewController.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9C33B2F0269EB27A004F5BF4 /* LoadingScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreenViewController.swift; sourceTree = "<group>"; };
 		9C66F4C926931F0A002E5C0A /* ItIsMarvel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ItIsMarvel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C66F4CC26931F0A002E5C0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9C66F4CE26931F0A002E5C0A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 		9C66F4E1269321F3002E5C0A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9C33B2F0269EB27A004F5BF4 /* LoadingScreenViewController.swift */,
 				9C66F4D026931F0A002E5C0A /* MarvelTableViewController.swift */,
 				9C66F5102696239E002E5C0A /* MarvelItemViewController.swift */,
 			);
@@ -200,6 +203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C66F4D126931F0A002E5C0A /* MarvelTableViewController.swift in Sources */,
+				9C33B2F1269EB27A004F5BF4 /* LoadingScreenViewController.swift in Sources */,
 				9C66F4CD26931F0A002E5C0A /* AppDelegate.swift in Sources */,
 				9C66F4EE269478B1002E5C0A /* URLManager.swift in Sources */,
 				9C66F4CF26931F0A002E5C0A /* SceneDelegate.swift in Sources */,

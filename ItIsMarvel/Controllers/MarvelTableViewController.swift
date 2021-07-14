@@ -22,13 +22,23 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
     var upSortButton: UIBarButtonItem!
     var downSortButton: UIBarButtonItem!
     var segmentControll: UISegmentedControl!
+    var shownIndexes: [IndexPath] = []
     
     //MARK: - variables
     let marvelManager = MarvelCharactersManager()
     var marvelList: [CharacterResult] = []
+    let loadingVC = LoadingScreenViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //let loadingVC = LoadingScreenViewController()
+        loadingVC.modalPresentationStyle = .overCurrentContext
+        loadingVC.modalTransitionStyle = .crossDissolve
+        
+        //present(loadingVC, animated: true, completion: nil)
+        
+        self.navigationController?.present(loadingVC, animated: true, completion: nil)
         
         //MARK: - UI components
         self.view.backgroundColor = UIColor.white
@@ -36,7 +46,7 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         //MARK: - segment controll
-        let sortItems = ["name", "id"]
+        let sortItems = ["name", "modified"]
         segmentControll = UISegmentedControl(items: sortItems)
         segmentControll.selectedSegmentIndex = 0
         segmentControll.addTarget(self, action: #selector(sortValueChanched), for: .valueChanged)
@@ -97,15 +107,26 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
     
     func fetchCharactersWithParameters() {
         self.marvelList.removeAll()
-        var sortValue = ""
+        DispatchQueue.main.async {
+            self.marvelTableView.reloadData()
+        }
+        
         RequestStaticParameters.offsetCharacters = 0
         
+        let sortValue = getSortValue()
+        
+        self.marvelManager.fetchCharacters(with: ["orderBy": sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
+    }
+    
+    func getSortValue() -> String {
+        var sortValue = ""
         if segmentControll.selectedSegmentIndex == 0 {
             sortValue = downSortButton.isEnabled ? "-name" : "name"
         }else {
-            sortValue = downSortButton.isEnabled ? "-id" : "id"
+            sortValue = downSortButton.isEnabled ? "-modified" : "modified"
         }
-        self.marvelManager.fetchCharacters(with: ["orderBy": sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
+        RequestStaticParameters.sortValue = sortValue
+        return sortValue
     }
     
     //MARK: - MarvelRequestManagerDelegate
@@ -118,6 +139,7 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
         RequestStaticParameters.offsetCharacters += result.count
         
         DispatchQueue.main.async {
+            self.loadingVC.dismiss(animated: true, completion: nil)
             self.marvelTableView.reloadData()
         }
     }
@@ -157,7 +179,8 @@ extension MarvelTableViewController: UITableViewDataSourcePrefetching {
     //MARK: - UITableViewDataSourcePrefetching
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         if indexPaths[indexPaths.count-1].row == marvelList.count - 1 {
-            self.marvelManager.fetchCharacters(limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
+            self.marvelManager.fetchCharacters(with: ["orderBy": RequestStaticParameters.sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
         }
     }
 }
+
