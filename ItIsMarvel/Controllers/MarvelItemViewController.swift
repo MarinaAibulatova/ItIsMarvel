@@ -23,12 +23,15 @@ class MarvelItemViewController: UIViewController, MarvelCharacterManagerDelegate
        // let marvelItemView = MarvelItemView()
         marvelItemView.seriesTableView.delegate = self
         marvelItemView.seriesTableView.dataSource = self
+        marvelItemView.seriesTableView.prefetchDataSource = self
         
         self.view.addSubview(marvelItemView.mainView)
         setMarvelViewConstraints(for: marvelItemView.mainView)
         
         marvelManager.delegate = self
         if let _ = marvelItem {
+            RequestStaticParameters.offsetSeries = 0
+            self.series.removeAll()
             marvelItemView.setVar(for: marvelItem!)
             marvelManager.fetchSeries(with: marvelItem!.id, limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetSeries)
         }
@@ -75,7 +78,7 @@ extension MarvelItemViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MarvelItemView.cellRegister, for: indexPath)
-        cell.textLabel?.text = series[indexPath.row].title
+        cell.textLabel?.text = "\(String(indexPath.row)):\(series[indexPath.row].title!)"
         return cell
     }
     
@@ -84,7 +87,11 @@ extension MarvelItemViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 150
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return series.count == 0 ? "no series": "Series"
     }
 }
 
