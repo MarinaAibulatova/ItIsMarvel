@@ -23,3 +23,10 @@ struct MarvelRequestManager{
         }
     }
 }
+
+struct RequestStaticParameters {
+    static let limit: Int = 20
+    static var offsetCharacters: Int = 0
+    static var offsetSeries: Int = 0
+    static var sortValue: String = "name"
+}
