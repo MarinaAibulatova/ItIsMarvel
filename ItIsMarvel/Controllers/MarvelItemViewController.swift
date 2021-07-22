@@ -25,6 +25,7 @@ class MarvelItemViewController: UIViewController, MarvelCharacterManagerDelegate
         marvelItemView.seriesTableView.dataSource = self
         marvelItemView.seriesTableView.prefetchDataSource = self
         
+        self.view.backgroundColor = .white
         self.view.addSubview(marvelItemView.mainView)
         setMarvelViewConstraints(for: marvelItemView.mainView)
         
@@ -39,18 +40,11 @@ class MarvelItemViewController: UIViewController, MarvelCharacterManagerDelegate
     
     //MARK: - Constraints
     func setMarvelViewConstraints(for marvelView: UIView) {
-        let safeAreaGuide = view.safeAreaLayoutGuide
-        let margins = view.layoutMarginsGuide
-        
-        var constraints = [
-            marvelView.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
-            marvelView.trailingAnchor.constraint(equalTo: margins.trailingAnchor)]
-        
-        NSLayoutConstraint.activate(constraints)
-        
-        constraints = [
-            marvelView.topAnchor.constraint(equalToSystemSpacingBelow: safeAreaGuide.topAnchor, multiplier: 1.0),
-            marvelView.bottomAnchor.constraint(equalToSystemSpacingBelow: safeAreaGuide.bottomAnchor, multiplier: 1.0)]
+        let constraints = [
+            marvelView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            marvelView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            marvelView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            marvelView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50)]
         
         NSLayoutConstraint.activate(constraints)
     }
