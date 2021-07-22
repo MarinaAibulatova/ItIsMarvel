@@ -19,16 +19,13 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
         return table
     }()
     
-    var upSortButton: UIBarButtonItem!
-    var downSortButton: UIBarButtonItem!
-    var segmentControll: UISegmentedControl!
-    var shownIndexes: [IndexPath] = []
-    
     //MARK: - variables
     let marvelManager = MarvelCharactersManager()
     var marvelList: [CharacterResult] = []
     let loadingVC = LoadingScreenViewController()
+    var sortValue: String = "name"
     
+    //MARK: - override for view
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,27 +35,8 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
         
         //present(loadingVC, animated: true, completion: nil)
         
-        self.navigationController?.present(loadingVC, animated: true, completion: nil)
+       //self.navigationController?.present(loadingVC, animated: true, completion: nil)
         
-        //MARK: - UI components
-        self.view.backgroundColor = UIColor.white
-        self.navigationItem.title = "Marvel"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        
-        //MARK: - segment controll
-        let sortItems = ["name", "modified"]
-        segmentControll = UISegmentedControl(items: sortItems)
-        segmentControll.selectedSegmentIndex = 0
-        segmentControll.addTarget(self, action: #selector(sortValueChanched), for: .valueChanged)
-        navigationItem.titleView = segmentControll
-        
-        //MARK: - BarButton
-        upSortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.circle"), style: .plain, target: self, action: #selector(upTapped))
-        downSortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.down.circle"), style: .plain, target: self, action: #selector(downTapped))
-        
-        upSortButton.isEnabled = false
-        navigationItem.rightBarButtonItems = [downSortButton, upSortButton]
-       
         self.view.addSubview(marvelTableView)
         setMarvelTableViewConstraints()
         
@@ -69,8 +47,25 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
         
         //MARK: - Marvel request
         marvelManager.delegate = self
-        marvelManager.fetchCharacters(limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
+        //marvelManager.fetchCharacters(with: ["orderBy": sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        RequestStaticParameters.offsetCharacters = 0
+        
+        loadingVC.modalPresentationStyle = .overCurrentContext
+        loadingVC.modalTransitionStyle = .crossDissolve
+        self.navigationController?.present(loadingVC, animated: true, completion: nil)
+        marvelManager.fetchCharacters(with: ["orderBy": RequestStaticParameters.sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
+        
+        print(RequestStaticParameters.limit)
+    }
+    
+    convenience init(with sort: String) {
+        self.init()
+        //self.sortValue = sort
     }
 
     //MARK: - Constraints
@@ -88,46 +83,17 @@ class MarvelTableViewController: UIViewController, MarvelCharactersManagerDelega
         NSLayoutConstraint.activate(constraints)
     }
 
-    //MARK: - Buttons actions
-    @objc func upTapped() {
-        fetchCharactersWithParameters()
-        upSortButton.isEnabled = false
-        downSortButton.isEnabled = true
-    }
-    
-    @objc func downTapped() {
-        fetchCharactersWithParameters()
-        downSortButton.isEnabled = false
-        upSortButton.isEnabled = true
-    }
-    
-    @objc func sortValueChanched() {
-        fetchCharactersWithParameters()
-    }
-    
+   
     func fetchCharactersWithParameters() {
         self.marvelList.removeAll()
         DispatchQueue.main.async {
             self.marvelTableView.reloadData()
         }
-        
+
         RequestStaticParameters.offsetCharacters = 0
-        
-        let sortValue = getSortValue()
-        
-        self.marvelManager.fetchCharacters(with: ["orderBy": sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
+        self.marvelManager.fetchCharacters(with: ["orderBy": RequestStaticParameters.sortValue], limit: RequestStaticParameters.limit, offset: RequestStaticParameters.offsetCharacters)
     }
     
-    func getSortValue() -> String {
-        var sortValue = ""
-        if segmentControll.selectedSegmentIndex == 0 {
-            sortValue = downSortButton.isEnabled ? "-name" : "name"
-        }else {
-            sortValue = downSortButton.isEnabled ? "-modified" : "modified"
-        }
-        RequestStaticParameters.sortValue = sortValue
-        return sortValue
-    }
     
     //MARK: - MarvelRequestManagerDelegate
     func didFinishedWithError(error: String) {

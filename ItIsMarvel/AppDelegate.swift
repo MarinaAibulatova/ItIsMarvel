@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        let controller = MarvelTableViewController()
+        let controller = ContainerViewController()
         let nabigationController = UINavigationController(rootViewController: controller)
         
         window?.rootViewController = nabigationController
